@@ -13,7 +13,7 @@ def jakartaVersion = '6.1.0'
 def apacheCommonsVersion = '3.17.0'
 
 dependencies {
-    testImplementation libs.junit
+//    testImplementation libs.junit
 //    implementation libs.guava
 //    implementation fileTree(include: ['*.jar'], dir: 'lib')
     compileOnly group: 'jakarta.servlet',
@@ -52,3 +52,4 @@ gretty {
 //
 //    with jar
 //}
+
