@@ -1,0 +1,54 @@
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.gretty' version '4.1.5'
+}
+
+repositories {
+    mavenCentral()
+}
+
+def jakartaVersion = '6.1.0'
+def apacheCommonsVersion = '3.17.0'
+
+dependencies {
+    testImplementation libs.junit
+//    implementation libs.guava
+//    implementation fileTree(include: ['*.jar'], dir: 'lib')
+    compileOnly group: 'jakarta.servlet',
+            name: 'jakarta.servlet-api',
+            version: jakartaVersion
+
+    implementation group: 'org.apache.commons',
+            name: 'commons-lang3',
+            version: apacheCommonsVersion
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    mainClass = 'java.HelloServlet'
+}
+
+gretty {
+    contextPath = '/'
+}
+
+//tasks.register('fatJar', Jar) {
+//
+//    manifest {
+//        attributes 'Main-Class': 'java.HelloServlet'
+//    }
+//
+//    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+//
+//    from(configurations.runtimeClasspath.collect
+//            { it.isDirectory() ? it : zipTree(it) })
+//
+//    with jar
+//}
