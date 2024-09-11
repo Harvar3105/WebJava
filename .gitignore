@@ -13,7 +13,6 @@
 /out
 /build
 /.gradle
-/gradle/
 /.idea
 
 # Unit test reports
