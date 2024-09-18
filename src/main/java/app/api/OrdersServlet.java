@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet("/api/orders")
@@ -25,20 +26,11 @@ public class OrdersServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String data = req.getReader().lines().collect(Collectors.joining("\n"));
-//        System.out.println("Data: " + data);
 
-        LinkedHashMap<String, String> parts = JsonSerializer.fromJson(data);
-//        System.out.println("Parts before: " + parts);
-        parts.putFirst("id", String.valueOf(idPicker.getNewId()));
-//        System.out.println(parts);
+        Map<String, String> parts = new LinkedHashMap<>(JsonSerializer.fromJson(data)) ;
+        parts.put("id", String.valueOf(idPicker.getNewId()));
         String answer = JsonSerializer.toJson(parts);
-//        System.out.println(answer);
 
-//        System.out.println("Request: ");
-//        System.out.println(req);
-//        System.out.println(req.getContentType());
-//        System.out.println(req.getMethod());
-//        resp.setContentType("application/json");
         resp.getWriter().print(answer);
     }
 }

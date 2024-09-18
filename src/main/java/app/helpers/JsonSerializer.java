@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 public final class JsonSerializer {
 
-    public static LinkedHashMap<String, String> fromJson(String json){
-        LinkedHashMap<String, String> result = new LinkedHashMap<>();
+    public static Map<String, String> fromJson(String json){
+        Map<String, String> result = new LinkedHashMap<>();
 
         Pattern pattern = Pattern.compile("\"([^\"]+)\"\\s*:\\s*\"([^\"]+)\"");
         Matcher matcher = pattern.matcher(json);
@@ -22,7 +22,7 @@ public final class JsonSerializer {
         return result;
     }
 
-    public static String toJson(LinkedHashMap<String, String> data){
+    public static String toJson(Map<String, String> data){
 //        StringBuilder builder = new StringBuilder();
 //
 //        builder.append('{');
