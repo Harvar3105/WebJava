@@ -31,6 +31,7 @@ public class OrdersServlet extends HttpServlet {
         parts.put("id", String.valueOf(idPicker.getNewId()));
         String answer = JsonSerializer.toJson(parts);
 
+        resp.setContentType("application/json");
         resp.getWriter().print(answer);
     }
 }
