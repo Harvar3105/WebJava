@@ -25,13 +25,13 @@ public class OrdersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String data = req.getReader().lines().collect(Collectors.joining("\n"));
-
-        Map<String, String> parts = new LinkedHashMap<>(JsonSerializer.fromJson(data)) ;
-        parts.put("id", String.valueOf(idPicker.getNewId()));
-        String answer = JsonSerializer.toJson(parts);
-
-        resp.setContentType("application/json");
-        resp.getWriter().print(answer);
+//        String data = req.getReader().lines().collect(Collectors.joining("\n"));
+//
+//        Map<String, String> parts = new LinkedHashMap<>(JsonSerializer.fromJson(data)) ;
+//        parts.put("id", String.valueOf(idPicker.getNewId()));
+//        String answer = JsonSerializer.toJson(parts);
+//
+//        resp.setContentType("application/json");
+//        resp.getWriter().print(answer);
     }
 }
