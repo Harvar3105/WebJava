@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @WebServlet("/api/parser")
@@ -17,18 +17,33 @@ public class ParserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String data = req.getReader().lines().collect(Collectors.joining("\n"));
-
+        resp.setContentType("application/json");
         Map<String, Object> result = JsonSerializer.fromJson(data);
 
-        System.out.println("----------Result----------");
-        System.out.println(result);
-//
-//        StringBuilder builder = new StringBuilder();
-//        for (Map.Entry<String, Object> part : result.entrySet()){
-//            System.out.println(part);
-//            builder.append("\"").append(part.getKey()).append("\":\"").append(part.getValue()).append("\", \n");
-//        }
+        String built = buildAnswer(result);
+        String output = '[' + built.substring(0, built.length() - 1) + ']';
+        System.out.println(output);
+        resp.getWriter().println(output);
+    }
 
-        resp.getWriter().println(JsonSerializer.toJson(result));
+
+    private String buildAnswer(Map<String, Object> data) {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, Object> part : data.entrySet()){
+            if (part.getValue() instanceof Map<?, ?> map){
+                if (map.keySet().stream().allMatch(k -> k instanceof String)) {
+                    Map<String, Object> stringMap = (Map<String, Object>) map;
+                    builder.append(buildAnswer(stringMap));
+                    continue;
+                }
+                throw new RuntimeException("Key is not string? " + map);
+            }
+            builder.append("\"")
+                    .append(part.getValue().toString()
+                            .replaceAll("\"", ""))
+                    .append("\",");
+        }
+
+        return builder.toString();
     }
 }
