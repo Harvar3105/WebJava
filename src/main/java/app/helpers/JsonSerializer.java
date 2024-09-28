@@ -31,7 +31,6 @@ public final class JsonSerializer {
     private static Object parseValue(String value) {
         value = value.trim();
         if (value.matches("-?\\d+(\\.\\d+)?")) {
-            // Если это число
             return Integer.parseInt(value);
         }
         return value;
@@ -65,21 +64,31 @@ public final class JsonSerializer {
         return result;
     }
 
-    public static String toJson(Map<String, Object> data) {
+    public static String toJson(Map<String, Object> data){
+        String unedited = buildAnswer(data);
+        StringBuilder builder = new StringBuilder(unedited);
+
+        builder.deleteCharAt(builder.lastIndexOf(","));
+
+        return builder.toString();
+    }
+
+    public static String buildAnswer(Map<String, Object> data) {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, Object> part : data.entrySet()){
             if (part.getValue() instanceof Map<?, ?> map){
                 if (map.keySet().stream().allMatch(k -> k instanceof String)) {
                     Map<String, Object> stringMap = (Map<String, Object>) map;
-                    builder.append(toJson(stringMap));
+                    builder.append("\"").append(part.getKey()).append("\":{\n");
+                    builder.append(toJson(stringMap)).append("},\n");
                     continue;
                 }
                 throw new RuntimeException("Key is not string? " + map);
             }
             System.out.println(part);
-            builder.append("\"").append(part.getKey()).append("\":\"").append(part.getValue()).append("\", \n");
+            builder.append("\"").append(part.getKey()).append("\":").append(part.getValue().toString()).append(", \n");
         }
 
-        return builder.toString();
+        return builder.substring(0, builder.length() - 1);
     }
 }
