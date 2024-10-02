@@ -21,27 +21,43 @@ public class ParserServlet extends HttpServlet {
         Map<String, Object> result = JsonSerializer.fromJson(data);
 
         String built = buildAnswer(result);
-        String output = '[' + built.substring(0, built.length() - 1) + ']';
+        String output = '[' + built + ']';
         resp.getWriter().println(output);
     }
 
 
     private String buildAnswer(Map<String, Object> data) {
         StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, Object> part : data.entrySet()){
-            if (part.getValue() instanceof Map<?, ?> map){
-                if (map.keySet().stream().allMatch(k -> k instanceof String)) {
-                    Map<String, Object> stringMap = (Map<String, Object>) map;
-                    builder.append(buildAnswer(stringMap));
-                    continue;
+        Queue<Map.Entry<Map<String, Object>, Integer>> queue = new LinkedList<>();
+        queue.add(Map.entry(data, 1));
+
+        while (!queue.isEmpty()) {
+            Map.Entry<Map<String, Object>, Integer> current = queue.poll();
+            Map<String, Object> currentData = current.getKey();
+            int depth = current.getValue();
+
+            for (Map.Entry<String, Object> part : currentData.entrySet()) {
+                Object value = part.getValue();
+                if (value instanceof Map<?, ?> map) {
+                    if (map.keySet().stream().allMatch(k -> k instanceof String)) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> stringMap = (Map<String, Object>) map;
+                        queue.add(Map.entry(stringMap, depth + 1));
+                    } else {
+                        throw new RuntimeException("Key is not string? " + map);
+                    }
+                } else if (value instanceof Number number) {
+                    builder.append(number.intValue() * depth).append(", ");
+                } else {
+                    builder.append("\"")
+                            .append(value.toString()
+                                    .replaceAll("\"", ""))
+                            .append("\", ");
                 }
-                throw new RuntimeException("Key is not string? " + map);
             }
-            builder.append("\"")
-                    .append(part.getValue().toString()
-                            .replaceAll("\"", ""))
-                    .append("\",");
         }
+
+        builder.delete(builder.length() - 2, builder.length());
 
         return builder.toString();
     }
