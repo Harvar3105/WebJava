@@ -22,7 +22,6 @@ public class ParserServlet extends HttpServlet {
 
         String built = buildAnswer(result);
         String output = '[' + built.substring(0, built.length() - 1) + ']';
-        System.out.println(output);
         resp.getWriter().println(output);
     }
 

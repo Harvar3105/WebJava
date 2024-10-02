@@ -1,7 +1,6 @@
 package app.api;
 
 import app.helpers.IdPicker;
-import app.helpers.JsonSerializer;
 import app.helpers.Order;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletContext;
@@ -12,36 +11,34 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet("/api/orders")
-public class OrdersServlet extends HttpServlet {
+@WebServlet("/orders/form")
+public class OrdersFormServlet extends HttpServlet {
 
     private final IdPicker idPicker = new IdPicker();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String id = req.getParameter("id");
-        String result = mapper.writeValueAsString(getServletContext().getAttribute(id)) ;
-
-        resp.setContentType("application/json");
-        resp.getWriter().print(result);
+        super.doGet(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String data = req.getReader().lines().collect(Collectors.joining("\n"));
+        String number = req.getParameter("orderNumber");
 
-        ServletContext context = getServletContext();
-        Order order = mapper.readValue(data, Order.class);
+        Order order = new Order();
+        order.setOrderNumber(number);
         order.setId(idPicker.getNewId());
-        context.setAttribute(String.valueOf(order.getId()), order);
+        getServletContext().setAttribute(String.valueOf(order.getId()), order);
 
-
-        resp.setContentType("application/json");
-        resp.getWriter().print(mapper.writeValueAsString(order));
+        if (req.getHeader("Accept").equals("application/json")) {
+            resp.setContentType("application/json");
+            resp.getWriter().print(mapper.writeValueAsString(order));
+        } else {
+            resp.setContentType("application/x-www-form-urlencoded");
+            resp.getWriter().print("id=" + order.getId());
+        }
     }
 }

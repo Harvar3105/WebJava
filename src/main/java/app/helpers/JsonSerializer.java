@@ -5,7 +5,6 @@ import java.util.*;
 public final class JsonSerializer {
 
     public static Map<String, Object> fromJson(String json) {
-        System.out.println("Input data: " + json);
         return parseObject(json.substring(1, json.length() - 1));
     }
 
@@ -45,14 +44,12 @@ public final class JsonSerializer {
         int startPosition = 0;
 
         for (char c : str.toCharArray()) {
-            if (c == '"') isClosed = !isClosed;
+            isClosed = checkClosing(c, isClosed);
 
             if (c == ':' && !isValue && isClosed) {
                 isValue = true;
-            } else if (isValue && isClosed && c == '{') {
-                ++level;
-            } else if (isValue && isClosed && c == '}') {
-                --level;
+            } else if (isValue && isClosed && (c == '{' || c == '}')) {
+                level += checkLevelChange(c);
             } else if (c == ',' && isValue && level == 0 && isClosed) {
                 result.add(str.substring(startPosition, position));
                 startPosition = position + 1;
@@ -62,6 +59,20 @@ public final class JsonSerializer {
         }
         result.add(str.substring(startPosition));
         return result;
+    }
+
+    private static int checkLevelChange(char c){
+        if (c == '{') {
+            return 1;
+        }
+        return -1;
+    }
+
+    private static boolean checkClosing(char c, boolean cState){
+        if (c == '"') {
+            cState = !cState;
+        }
+        return cState;
     }
 
     public static String toJson(Map<String, Object> data){
@@ -85,7 +96,6 @@ public final class JsonSerializer {
                 }
                 throw new RuntimeException("Key is not string? " + map);
             }
-            System.out.println(part);
             builder.append("\"").append(part.getKey()).append("\":").append(part.getValue().toString()).append(", \n");
         }
 
