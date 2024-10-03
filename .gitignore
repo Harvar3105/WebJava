@@ -39,6 +39,7 @@ build
 
 # Spec files
 ruleset.xml
+src/main/resources/application.properties
 
 # Spec Directories
 src/test/java

@@ -1,19 +1,15 @@
 package app.helpers;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.*;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@RequiredArgsConstructor
 public class Order {
     private long id;
+    @NonNull
     private String orderNumber;
-    private OrderRow[] orderRows;
+    private Item[] items;
 }

@@ -1,19 +1,24 @@
 package app.api;
 
+import app.dal.OrderRepository;
 import app.helpers.IdPicker;
-import app.helpers.JsonSerializer;
 import app.helpers.Order;
+import app.helpers.connection.ConnectionPoolFactory;
+import app.helpers.connection.FileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 
+import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.stream.Collectors;
 
 @WebServlet("/api/orders")
@@ -23,25 +28,61 @@ public class OrdersServlet extends HttpServlet {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String id = req.getParameter("id");
-        String result = mapper.writeValueAsString(getServletContext().getAttribute(id)) ;
+    public void init() throws ServletException {
+        super.init();
+        var pool = new ConnectionPoolFactory().createConnectionPool();
+        getServletContext().setAttribute("pool", pool);
+        OrderRepository rep = new OrderRepository(pool);
+        getServletContext().setAttribute("rep", rep);
+    }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        resp.getWriter().print(result);
+
+        try {
+            OrderRepository rep = (OrderRepository) getServletContext().getAttribute("rep");
+
+            String result;
+            if (req.getParameter("id") == null){
+                result = mapper.writeValueAsString(rep.getAll(true));
+            } else {
+                result = mapper.writeValueAsString(rep.getById(Long.parseLong(req.getParameter("id")), true));
+            }
+
+            resp.getWriter().print(result);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String data = req.getReader().lines().collect(Collectors.joining("\n"));
 
-        ServletContext context = getServletContext();
-        Order order = mapper.readValue(data, Order.class);
-        order.setId(idPicker.getNewId());
-        context.setAttribute(String.valueOf(order.getId()), order);
-
-
         resp.setContentType("application/json");
-        resp.getWriter().print(mapper.writeValueAsString(order));
+
+        try {
+            OrderRepository rep = (OrderRepository) getServletContext().getAttribute("rep");
+
+            Order order = mapper.readValue(data, Order.class);
+
+            long id = rep.insertOrder(order);
+            order.setId(id);
+            String res = mapper.writeValueAsString(order);
+            resp.getWriter().print(res);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void prepareScheme(DataSource ds) throws SQLException {
+        try (Connection con = ds.getConnection();
+             Statement st = con.createStatement()) {
+            String sql = FileUtil.readFileFromClasspath("scheme.sql");
+
+            st.executeUpdate(sql);
+
+        }
     }
 }

@@ -47,6 +47,14 @@ dependencies {
             name: 'commons-csv',
             version: '1.10.0'
 
+    implementation group: 'org.apache.commons',
+            name: 'commons-dbcp2',
+            version: '2.12.0'
+
+    implementation group: 'org.postgresql',
+            name: 'postgresql',
+            version: '42.7.3'
+
     testImplementation group: 'junit',
             name: 'junit',
             version: '4.13.2'

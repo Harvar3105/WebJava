@@ -1,0 +1,17 @@
+DROP TABLE IF EXISTS orders CASCADE;
+
+DROP TABLE IF EXISTS items CASCADE;
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY NOT NULL ,
+    orderNumber VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE items (
+    id SERIAL PRIMARY KEY NOT NULL ,
+    name VARCHAR(255) NOT NULL ,
+    quantity INTEGER NOT NULL,
+    price FLOAT NOT NULL ,
+    orderId INT NULL,
+    CONSTRAINT orderId FOREIGN KEY (orderId) REFERENCES orders(id)
+);
