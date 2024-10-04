@@ -26,15 +26,24 @@ public class OrdersServlet extends HttpServlet {
 
     private final IdPicker idPicker = new IdPicker();
     private final ObjectMapper mapper = new ObjectMapper();
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        var pool = new ConnectionPoolFactory().createConnectionPool();
-        getServletContext().setAttribute("pool", pool);
-        OrderRepository rep = new OrderRepository(pool);
-        getServletContext().setAttribute("rep", rep);
-    }
+//
+//    @Override
+//    public void init() throws ServletException {
+//        super.init();
+//
+//        if (getServletContext().getAttribute("rep") == null){
+//            DataSource pool;
+//            if (getServletContext().getAttribute("pool") == null){
+//                pool = new ConnectionPoolFactory().createConnectionPool();
+//                getServletContext().setAttribute("pool", pool);
+//            } else {
+//                pool = (DataSource) getServletContext().getAttribute("pool");
+//            }
+//
+//            OrderRepository rep = new OrderRepository(pool);
+//            getServletContext().setAttribute("rep", rep);
+//        }
+//    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
