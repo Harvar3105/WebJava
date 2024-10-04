@@ -2,7 +2,6 @@ package app.dal;
 
 import app.helpers.Item;
 import app.helpers.Order;
-import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 public class OrderRepository {
 
     private final DataSource ds;
+    private static final String ORDER_FIELD = "orderNumber";
 
     public OrderRepository(DataSource dataSource){this.ds = dataSource;}
 
@@ -27,7 +27,7 @@ public class OrderRepository {
 
             while(rs.next()){
                 Order order = new Order();
-                order.setOrderNumber(rs.getString("orderNumber"));
+                order.setOrderNumber(rs.getString(ORDER_FIELD));
                 order.setId(rs.getLong("id"));
                 result.add(order);
             }
@@ -40,7 +40,34 @@ public class OrderRepository {
                 order.setItems(groups.get(order.getId()).toArray(Item[]::new));
             }
         }
+        return result;
+    }
 
+    public List<Order> getAll(boolean withItems, int freeze) throws SQLException, InterruptedException {
+        List<Order> result = new ArrayList<>();
+
+        try(Connection conn = ds.getConnection();
+            Statement st = conn.createStatement()){
+            String sql = "SELECT * FROM orders";
+            ResultSet rs = st.executeQuery(sql);
+
+            while(rs.next()){
+                Order order = new Order();
+                order.setOrderNumber(rs.getString(ORDER_FIELD));
+                order.setId(rs.getLong("id"));
+                result.add(order);
+            }
+
+            Thread.sleep(freeze);
+
+            if (!withItems) {return result;}
+
+            Map<Long, List<Item>> groups = getAllItems(conn).stream().collect(Collectors.groupingBy(Item::getOrderNumber));
+            for (Order order : result){
+                if (groups.get(order.getId()) == null) {continue;}
+                order.setItems(groups.get(order.getId()).toArray(Item[]::new));
+            }
+        }
         return result;
     }
 
@@ -74,7 +101,29 @@ public class OrderRepository {
 
             Order order = new Order();
             order.setId(id);
-            order.setOrderNumber(rs.getString("orderNumber"));
+            order.setOrderNumber(rs.getString(ORDER_FIELD));
+
+            if(!withItems) {return order;}
+
+            order.setItems(getItemsById(conn, id).toArray(Item[]::new));
+            return order;
+        }
+    }
+
+    public Order getById(long id, boolean withItems, int freeze) throws SQLException, InterruptedException {
+        String sql = "SELECT * FROM orders WHERE id = ?";
+        try(Connection conn = ds.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setLong(1, id);
+
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {throw new RuntimeException("Could not find by id: " + id);}
+
+            Order order = new Order();
+            order.setId(id);
+            order.setOrderNumber(rs.getString(ORDER_FIELD));
+
+            Thread.sleep(freeze);
 
             if(!withItems) {return order;}
 
@@ -112,6 +161,22 @@ public class OrderRepository {
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (!rs.next()) {throw new RuntimeException("Could not insert: " + order);}
+            return rs.getLong("id");
+        }
+    }
+
+    public long insertOrder(Order order, int freeze) throws SQLException, InterruptedException {
+        String sql = "INSERT INTO orders(orderNumber) VALUES (?)";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, new String[] {"id"})){
+            ps.setString(1, order.getOrderNumber());
+
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if (!rs.next()) {throw new RuntimeException("Could not insert: " + order);}
+
+            Thread.sleep(freeze);
+
             return rs.getLong("id");
         }
     }

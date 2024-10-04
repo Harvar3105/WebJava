@@ -2,6 +2,7 @@ package app.api;
 
 import app.dal.OrderRepository;
 import app.helpers.IdPicker;
+import app.helpers.Order;
 import app.helpers.connection.ConnectionPoolFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @WebServlet("/api/orders/slow")
 public class OrdersSlowServlet extends HttpServlet {
@@ -36,14 +38,33 @@ public class OrdersSlowServlet extends HttpServlet {
 
             String result;
             if (req.getParameter("id") == null){
-                result = mapper.writeValueAsString(rep.getAll(true));
+                result = mapper.writeValueAsString(rep.getAll(true, 1000));
             } else {
                 result = mapper.writeValueAsString(rep.getById(Long.parseLong(req.getParameter("id")), true));
             }
 
-            Thread.sleep(1000);
-
             resp.getWriter().print(result);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String data = req.getReader().lines().collect(Collectors.joining("\n"));
+
+        resp.setContentType("application/json");
+
+        try {
+            OrderRepository rep = (OrderRepository) getServletContext().getAttribute("rep");
+
+            Order order = mapper.readValue(data, Order.class);
+
+            long id = rep.insertOrder(order, 1000);
+            order.setId(id);
+            String res = mapper.writeValueAsString(order);
+
+            resp.getWriter().print(res);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
