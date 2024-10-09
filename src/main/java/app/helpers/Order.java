@@ -11,5 +11,5 @@ public class Order {
     private long id;
     @NonNull
     private String orderNumber;
-    private Item[] items;
+    private OrderRow[] orderRows;
 }

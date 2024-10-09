@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @WebServlet("/api/orders")
@@ -26,24 +27,6 @@ public class OrdersServlet extends HttpServlet {
 
     private final IdPicker idPicker = new IdPicker();
     private final ObjectMapper mapper = new ObjectMapper();
-//
-//    @Override
-//    public void init() throws ServletException {
-//        super.init();
-//
-//        if (getServletContext().getAttribute("rep") == null){
-//            DataSource pool;
-//            if (getServletContext().getAttribute("pool") == null){
-//                pool = new ConnectionPoolFactory().createConnectionPool();
-//                getServletContext().setAttribute("pool", pool);
-//            } else {
-//                pool = (DataSource) getServletContext().getAttribute("pool");
-//            }
-//
-//            OrderRepository rep = new OrderRepository(pool);
-//            getServletContext().setAttribute("rep", rep);
-//        }
-//    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -80,6 +63,19 @@ public class OrdersServlet extends HttpServlet {
             order.setId(id);
             String res = mapper.writeValueAsString(order);
             resp.getWriter().print(res);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String data = req.getParameter("id");
+        resp.setContentType("application/json");
+
+        try{
+            OrderRepository rep = (OrderRepository) getServletContext().getAttribute("rep");
+            rep.deleteOrderById(Long.parseLong(data));
         } catch (Exception e){
             throw new RuntimeException(e);
         }
