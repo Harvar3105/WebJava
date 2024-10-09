@@ -99,6 +99,58 @@ public class OrderRepository {
         return null;
     }
 
+    public List<Order> insertOrderBulk(List<Order> orders) throws SQLException {
+        String orderSql  = "INSERT INTO orders(orderNumber) VALUES (?)";
+        String orderRowSql = "INSERT INTO orderRows(itemName, quantity, price, orderId) VALUES (?, ?, ?, ?)";
+        Order[] arrayed = orders.toArray(Order[]::new);
+        try (Connection conn = ds.getConnection();
+            PreparedStatement orderPs = conn.prepareStatement(orderSql , new String[] { "id" });
+            PreparedStatement orderRowPs = conn.prepareStatement(orderRowSql, new String[] {"id"})) {
+            conn.setAutoCommit(false);
+
+            for (Order order : orders){
+                orderPs.setString(1, order.getOrderNumber());
+                orderPs.addBatch();
+            }
+            orderPs.executeBatch();
+
+            ResultSet keys = orderPs.getGeneratedKeys();
+            int pos = 0;
+            while (keys.next()){
+                Order order = orders.get(pos);
+                order.setId(keys.getLong("id"));
+                arrayed[pos] = order;
+                pos++;
+            }
+
+            for (Order order : arrayed) {
+                for (OrderRow orderRow : order.getOrderRows()) {
+                    orderRowPs.setString(1, orderRow.getItemName());
+                    orderRowPs.setInt(2, orderRow.getQuantity());
+                    orderRowPs.setFloat(3, orderRow.getPrice());
+                    orderRowPs.setLong(4, order.getId());
+                    orderRowPs.addBatch();
+                }
+            }
+            orderRowPs.executeBatch();
+
+            ResultSet rowKeys = orderRowPs.getGeneratedKeys();
+            for (Order order : orders) {
+                for (OrderRow orderRow : order.getOrderRows()) {
+                    if (rowKeys.next()) {
+                        orderRow.setId(rowKeys.getLong("id"));
+                        orderRow.setOrderId(order.getId());
+                    }
+                }
+            }
+
+            conn.commit();
+            conn.setAutoCommit(true);
+
+            return Arrays.stream(arrayed).toList();
+        }
+    }
+
     public long insertOrder(Order order) throws SQLException{
         String sql = "INSERT INTO orders(orderNumber) VALUES (?)";
         try (Connection conn = ds.getConnection();
