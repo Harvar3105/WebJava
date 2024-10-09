@@ -37,7 +37,7 @@ public class OrdersServlet extends HttpServlet {
 
             String result;
             if (req.getParameter("id") == null){
-                result = mapper.writeValueAsString(rep.getAll(true));
+                result = mapper.writeValueAsString(rep.getAllWithJoin());
             } else {
                 result = mapper.writeValueAsString(rep.getById(Long.parseLong(req.getParameter("id")), true));
             }
