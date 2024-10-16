@@ -2,18 +2,14 @@ package app.dal;
 
 import app.helpers.Order;
 import app.helpers.OrderResultSetExtractor;
-import app.helpers.OrderResultSetMapper;
 import app.helpers.OrderRow;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
