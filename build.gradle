@@ -12,6 +12,7 @@ repositories {
 
 def jakartaVersion = '6.1.0'
 def apacheCommonsVersion = '3.17.0'
+def hsqldbVersion='2.7.3'
 
 dependencies {
 
@@ -59,9 +60,17 @@ dependencies {
             name: 'spring-jdbc',
             version: '6.1.13'
 
+    implementation group: 'org.hsqldb',
+            name: 'hsqldb',
+            version: hsqldbVersion
+
     implementation group: 'org.postgresql',
             name: 'postgresql',
             version: '42.7.3'
+
+    implementation group: 'org.hibernate',
+            name: 'hibernate-validator',
+            version: '8.0.1.Final'
 
     testImplementation group: 'junit',
             name: 'junit',
