@@ -15,7 +15,8 @@ public class ConnectionPoolFactory {
         int maxSize = 2;
 
         BasicDataSource pool = new BasicDataSource();
-        pool.setDriverClassName("org.postgresql.Driver");
+//        pool.setDriverClassName("org.postgresql.Driver");
+        pool.setDriverClassName("org.hsqldb.jdbc.JDBCDriver");
         pool.setUrl(connectionInfo.getUrl());
         pool.setUsername(connectionInfo.getUser());
         pool.setPassword(connectionInfo.getPass());
