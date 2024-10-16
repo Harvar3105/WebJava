@@ -71,7 +71,7 @@ public class OrderRepository {
             if (rows.length == 1){
                 saveOrderRow(rows[0]);
             } else if (rows.length > 1){
-                saveOrderRowsBatch(Arrays.asList(rows));
+                saveOrderRowsBatch(Arrays.asList((OrderRow[]) rows));
             }
         }
 
