@@ -37,6 +37,26 @@ public class OrderController {
     }
 
     @ResponseBody
+    @GetMapping(value = "{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Order> getByPathId(@PathVariable("orderId") String id) throws SQLException {
+        return ResponseEntity.ok(rep.getOrderById(Long.parseLong(id)));
+    }
+
+//    @ResponseBody
+//    @GetMapping(value = {"/{id}", ""}, params = "id", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> getById(@RequestParam(value = "id", required = false) String id,
+//                                     @PathVariable(value = "id", required = false) String pathId)
+//            throws SQLException {
+//        if (id != null && !id.isEmpty()) {
+//            return ResponseEntity.ok(rep.getOrderById(Long.parseLong(id)));
+//        } else if (pathId != null && !pathId.isEmpty()) {
+//            return ResponseEntity.ok(rep.getOrderById(Long.parseLong(pathId)));
+//        }
+//
+//        return ResponseEntity.badRequest().body("Bad id given! Param: " + id + ", Var: " + pathId);
+//    }
+
+    @ResponseBody
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) throws SQLException {
         order.setId(rep.saveOrder(order));

@@ -1,6 +1,8 @@
 package app.helpers.connection;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
@@ -27,7 +29,15 @@ public class ConnectionPoolFactory {
         pool.setMaxTotal(maxSize);
         pool.setInitialSize(1);
 
+        populateDatabase(pool);
+
         return pool;
+    }
+
+    private void populateDatabase(DataSource ds){
+        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(new ClassPathResource("scheme.sql"));
+        populator.execute(ds);
     }
 }
 

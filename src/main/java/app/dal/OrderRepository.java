@@ -3,6 +3,7 @@ package app.dal;
 import app.helpers.Order;
 import app.helpers.OrderResultSetExtractor;
 import app.helpers.OrderRow;
+import app.helpers.connection.FileUtil;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,9 +31,11 @@ public class OrderRepository {
     public void init(){
         orderRowInsert = new SimpleJdbcInsert(template)
                 .withTableName("orderRows")
+                .usingColumns("itemName", "quantity", "price", "orderId")
                 .usingGeneratedKeyColumns("id");
         orderInsert = new SimpleJdbcInsert(template)
                 .withTableName("orders")
+                .usingColumns("orderNumber")
                 .usingGeneratedKeyColumns("id");
     }
 

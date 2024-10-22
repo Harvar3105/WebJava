@@ -1,7 +1,5 @@
 package app.helpers.connection;
 
-import app.helpers.connection.ConnectionInfo;
-
 import java.util.Properties;
 
 public final class ConfigUtil {
