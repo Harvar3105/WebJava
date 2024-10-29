@@ -72,6 +72,14 @@ dependencies {
             name: 'hibernate-validator',
             version: '8.0.1.Final'
 
+    implementation group: 'org.hibernate',
+            name: 'hibernate-core',
+            version: '6.6.1.Final'
+
+    implementation group: 'org.springframework',
+            name: 'spring-orm',
+            version: '6.1.14'
+
     testImplementation group: 'junit',
             name: 'junit',
             version: '4.13.2'

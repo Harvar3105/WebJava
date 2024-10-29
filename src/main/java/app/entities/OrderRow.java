@@ -1,5 +1,7 @@
-package app.helpers;
+package app.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -9,7 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Entity
+@Table(name = "OrderRows")
 public class OrderRow {
+    @Id
+    @GeneratedValue
     private long id;
     @Size(min = 1, message = "OrderName must be at least 1 character long!")
     private String itemName;
@@ -17,5 +23,9 @@ public class OrderRow {
     private int quantity;
     @Positive(message = "Must be greater than 0!")
     private float price;
-    private long orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "orders_id")
+    @JsonBackReference
+    private Order order;
 }

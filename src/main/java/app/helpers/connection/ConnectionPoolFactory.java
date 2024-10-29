@@ -5,9 +5,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class ConnectionPoolFactory {
 
@@ -28,6 +25,28 @@ public class ConnectionPoolFactory {
         pool.setPassword(connectionInfo.getPass());
         pool.setMaxTotal(maxSize);
         pool.setInitialSize(1);
+
+        populateDatabase(pool);
+
+        return pool;
+    }
+
+    public DataSource createConnectionPool(ConnectionInfo ci, String driver, int maxSize, int initialSize){
+        BasicDataSource pool = new BasicDataSource();
+
+        pool.setDriverClassName(driver);
+        pool.setUrl(ci.getUrl());
+
+        if (ci.getUser() != null) {
+            pool.setUsername(ci.getUser());
+        }
+
+        if (ci.getPass() != null) {
+            pool.setPassword(ci.getPass());
+        }
+
+        pool.setMaxTotal(maxSize);
+        pool.setInitialSize(initialSize);
 
         populateDatabase(pool);
 

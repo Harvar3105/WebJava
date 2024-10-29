@@ -1,5 +1,6 @@
 package app;
 
+import app.configs.MvcConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class ApplicationInitializer extends

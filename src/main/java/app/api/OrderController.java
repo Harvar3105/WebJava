@@ -1,8 +1,8 @@
 package app.api;
 
 import app.dal.OrderRepository;
-import app.helpers.Order;
-import app.helpers.OrderRow;
+import app.entities.Order;
+import app.entities.OrderRow;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -27,7 +26,7 @@ public class OrderController {
     @ResponseBody
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Order>> getAllOrders() throws SQLException {
-        return ResponseEntity.ok(rep.getAllWithJoin());
+        return ResponseEntity.ok(rep.getAllOrdersWithRows());
     }
 
     @ResponseBody
@@ -42,41 +41,23 @@ public class OrderController {
         return ResponseEntity.ok(rep.getOrderById(Long.parseLong(id)));
     }
 
-//    @ResponseBody
-//    @GetMapping(value = {"/{id}", ""}, params = "id", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> getById(@RequestParam(value = "id", required = false) String id,
-//                                     @PathVariable(value = "id", required = false) String pathId)
-//            throws SQLException {
-//        if (id != null && !id.isEmpty()) {
-//            return ResponseEntity.ok(rep.getOrderById(Long.parseLong(id)));
-//        } else if (pathId != null && !pathId.isEmpty()) {
-//            return ResponseEntity.ok(rep.getOrderById(Long.parseLong(pathId)));
-//        }
-//
-//        return ResponseEntity.badRequest().body("Bad id given! Param: " + id + ", Var: " + pathId);
-//    }
-
     @ResponseBody
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) throws SQLException {
-        order.setId(rep.saveOrder(order));
+        order = rep.insertOrder(order);
         return ResponseEntity.ok(order);
     }
 
     @ResponseBody
     @PostMapping(value = "/{orderId}/row", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderRow> addOrderRow(@PathVariable("orderId") long orderId, @RequestBody OrderRow orderRow) throws SQLException {
-        orderRow.setOrderId(orderId);
-        orderRow.setId(rep.saveOrderRow(orderRow));
+        orderRow = rep.insertOrderRow(orderId, orderRow);
         return ResponseEntity.ok(orderRow);
     }
 
     @PostMapping("/{orderId}/rows")
     public void addOrderRowsBatch(@PathVariable("orderId") long orderId,@RequestBody List<OrderRow> orderRows) throws SQLException{
-        for (OrderRow row : orderRows) {
-            row.setOrderId(orderId);
-        }
-        rep.saveOrderRowsBatch(orderRows);
+        rep.insertOrderRow(orderId, orderRows);
     }
 
     @DeleteMapping(params = "id")
