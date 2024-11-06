@@ -1,6 +1,7 @@
 package app;
 
 import app.configs.MvcConfig;
+import app.configs.SecurityConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class ApplicationInitializer extends
@@ -17,6 +18,6 @@ public class ApplicationInitializer extends
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] { MvcConfig.class };
+        return new Class[] { MvcConfig.class, SecurityConfig.class };
     }
 }

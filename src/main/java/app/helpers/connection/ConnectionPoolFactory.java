@@ -56,6 +56,7 @@ public class ConnectionPoolFactory {
     private void populateDatabase(DataSource ds){
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource("scheme.sql"));
+        populator.addScript(new ClassPathResource("users.sql"));
         populator.execute(ds);
     }
 }

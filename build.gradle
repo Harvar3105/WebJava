@@ -14,6 +14,11 @@ def jakartaVersion = '6.1.0'
 def apacheCommonsVersion = '3.17.0'
 def hsqldbVersion='2.7.3'
 
+def springVersion = '6.1.14'
+def springSecurityVersion = '6.3.4'
+def jacksonVersion = '2.17.0'
+def jsonWebTokenVersion = '0.12.6'
+
 dependencies {
 
     implementation group: 'org.glassfish.jersey.core',
@@ -59,6 +64,46 @@ dependencies {
     implementation group: 'org.springframework',
             name: 'spring-jdbc',
             version: '6.1.13'
+
+    implementation group: 'org.springframework.security',
+            name: 'spring-security-web',
+            version: springSecurityVersion
+
+    implementation group: 'org.springframework.security',
+            name: 'spring-security-config',
+            version: springSecurityVersion
+
+    implementation group: 'org.springframework.security',
+            name: 'spring-security-oauth2-client',
+            version: springSecurityVersion
+
+    implementation group: 'org.springframework.security',
+            name: 'spring-security-oauth2-jose',
+            version: springSecurityVersion
+
+    implementation group: 'com.fasterxml.jackson.core',
+            name: 'jackson-databind',
+            version: jacksonVersion
+
+    implementation group: 'io.jsonwebtoken',
+            name: 'jjwt-api',
+            version: jsonWebTokenVersion
+
+    implementation group: 'io.jsonwebtoken',
+            name: 'jjwt-impl',
+            version: jsonWebTokenVersion
+
+    implementation group: 'io.jsonwebtoken',
+            name: 'jjwt-jackson',
+            version: jsonWebTokenVersion
+
+    testImplementation group: 'org.springframework',
+            name: 'spring-test',
+            version: springVersion
+
+    testImplementation group: 'org.springframework.security',
+            name: 'spring-security-test',
+            version: springSecurityVersion
 
     implementation group: 'org.hsqldb',
             name: 'hsqldb',
@@ -110,6 +155,10 @@ pmd{
     consoleOutput = true
     toolVersion = "7.5.0"
     ruleSets = ["/"]
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-parameters"
 }
 
 tasks.register('runTest', JavaExec) {

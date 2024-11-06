@@ -10,6 +10,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -20,7 +22,13 @@ import java.util.Properties;
 @PropertySource("classpath:/application.properties")
 //@Import({HsqlDataSource.class, PostgresDataSource.class})
 @EnableTransactionManagement
-public class MvcConfig {
+public class MvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry){
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("/static/**");
+    }
 
     @Bean
     public ObjectMapper objectMapper() {return new ObjectMapper();}

@@ -1,24 +1,5 @@
--- SET DATABASE SQL SYNTAX PGS TRUE;
---
--- DROP TABLE IF EXISTS orders CASCADE;
---
--- DROP TABLE IF EXISTS orderRows CASCADE;
---
--- CREATE TABLE orders (
---     id SERIAL PRIMARY KEY NOT NULL ,
---     orderNumber VARCHAR(255) NOT NULL
--- );
---
--- CREATE TABLE orderRows (
---     id SERIAL PRIMARY KEY NOT NULL ,
---     itemName VARCHAR(255) NOT NULL ,
---     quantity INTEGER NOT NULL,
---     price FLOAT NOT NULL ,
---     orderId INT NULL,
---     CONSTRAINT orderId FOREIGN KEY (orderId) REFERENCES orders(id) ON DELETE CASCADE
--- );
 
-DROP TABLE IF EXISTS order_rows;
+DROP TABLE IF EXISTS orderRows;
 DROP TABLE IF EXISTS orders;
 DROP SEQUENCE IF EXISTS seq1;
 DROP SEQUENCE IF EXISTS seq2;
@@ -39,4 +20,28 @@ CREATE TABLE orderRows (
     orders_id BIGINT,
     FOREIGN KEY (orders_id)
         REFERENCES orders ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS authorities;
+DROP TABLE IF EXISTS users;
+DROP SEQUENCE IF EXISTS seq3;
+DROP SEQUENCE IF EXISTS seq4;
+
+CREATE SEQUENCE seq3 AS INTEGER START WITH 1;
+CREATE SEQUENCE seq4 AS INTEGER START WITH 1;
+
+CREATE TABLE users (
+    id BIGINT NOT NULL PRIMARY KEY DEFAULT nextval('seq3'),
+    userName VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    enabled BOOLEAN NOT NULL,
+    firstName VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE authorities (
+    id BIGINT NOT NULL PRIMARY KEY DEFAULT nextval('seq4'),
+    user_id BIGINT NOT NULL,
+    authorityName VARCHAR(50) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users
+        ON DELETE CASCADE
 );
