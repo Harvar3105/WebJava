@@ -21,11 +21,11 @@ public class PostgresDataSource {
 //        ds.setPassword(env.getProperty("postgres.pass"));
 //        ds.setUrl(env.getProperty("postgres.url"));
 
-        var ci = new ConnectionInfo(env.getProperty("hsqlDBUrl"), env.getProperty("dbUser"), env.getProperty("dbPassword"));
-        return new ConnectionPoolFactory().createConnectionPool(ci, "org.hsqldb.jdbcDriver", 1, 1);
+        var ci = new ConnectionInfo(env.getProperty("dbUrl"), env.getProperty("dbUser"), env.getProperty("dbPassword"));
+        return new ConnectionPoolFactory().createConnectionPool(ci, "org.postgresql.Driver", 1, 1);
     }
 
-    @Bean("dialect")
+    @Bean("PostgreSQLdialect")
     public String dialect() {
         return "org.hibernate.dialect.PostgreSQLDialect";
     }

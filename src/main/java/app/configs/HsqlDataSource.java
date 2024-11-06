@@ -22,7 +22,7 @@ public class HsqlDataSource {
         return new ConnectionPoolFactory().createConnectionPool(ci, "org.hsqldb.jdbcDriver", 1, 1);
     }
 
-    @Bean("dialect")
+    @Bean("HSQLdialect")
     public String dialect() {
         return "org.hibernate.dialect.HSQLDialect";
     }

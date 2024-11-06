@@ -77,7 +77,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService users(@Qualifier("HsqlDataSource") DataSource dataSource) {
+    public UserDetailsService users(
+//            @Qualifier("HsqlDataSource") DataSource dataSource
+            @Qualifier("PostgresDataSource") DataSource dataSource
+    ) {
         JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 
 //        userDetailsManager.setUsersByUsernameQuery("SELECT userName, password, enabled, firstName FROM USERS WHERE userName = ?");

@@ -48,6 +48,7 @@ public class ConnectionPoolFactory {
         pool.setMaxTotal(maxSize);
         pool.setInitialSize(initialSize);
 
+
         populateDatabase(pool);
 
         return pool;
