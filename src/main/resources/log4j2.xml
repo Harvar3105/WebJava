@@ -8,23 +8,58 @@
     </Appenders>
     <Loggers>
 
-<!--        <Root level="warn">-->
+<!--        <Root level="debug">-->
 <!--            <AppenderRef ref="Console"/>-->
+<!--            <AppenderRef ref="File"/>-->
 <!--        </Root>-->
-        <Root level="debug">
+
+<!--        <Logger name="util.SessionListener"-->
+<!--                level="warn"/>-->
+<!--        <Logger name="org.springframework.core.LocalVariableTableParameterNameDiscoverer"-->
+<!--                level="error"/>-->
+<!--        <Logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="warn"/>-->
+<!--        <Logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="warn"/>-->
+<!--        <Logger name="org.springframework.jdbc.datasource.init.ScriptUtils" level="warn" />-->
+<!--        <Logger name="org.hibernate.internal.SessionFactoryImpl" level="warn" />-->
+<!--        <Logger name="org.hibernate.type.BasicTypeRegistry" level="warn" />-->
+<!--        <Logger name="org.springframework.jndi.JndiTemplate" level="warn" />-->
+<!--        <Logger name="org.springframework.jndi.JndiLocatorDelegate" level="warn" />-->
+<!--        <Logger name="org.hibernate.mapping.BasicValue" level="warn" />-->
+<!--        <Logger name="org.hibernate.internal.SessionFactoryImpl" level="warn" />-->
+<!--        <Logger name="org.hibernate.validator.internal.engine.ValidatorFactoryConfigurationHelper" level="warn" />-->
+<!--        <Logger name="org.hibernate.id" level="warn"/>-->
+<!--        <Logger name="org.hibernate.boot" level="warn"/>-->
+<!--        <Logger name="org.hibernate.query.sqm.function.SqmFunctionRegistry" level="warn"/>-->
+<!--        <Logger name="org.hibernate.query.sqm.function.HQL_FUNCTIONS" level="warn"/>-->
+
+
+        <Root level="warn">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="File"/>
         </Root>
 
-        <Logger name="util.SessionListener"
-                level="warn"/>
+        <Logger name="org.springframework.security.web.authentication" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
 
-        <Logger name="org.springframework.core.LocalVariableTableParameterNameDiscoverer"
-                level="error"/>
-        <Logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="warn"/>
-        <Logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="warn"/>
-        <Logger name="org.hibernate.id" level="warn"/>
-        <Logger name="org.hibernate.boot" level="warn"/>
+        <Logger name="org.springframework.security.access" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.springframework.security.web.FilterChainProxy" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.springframework.security.authentication" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.springframework.security.core.context" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.springframework.security.oauth2.jwt" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
 
     </Loggers>
 </Configuration>
