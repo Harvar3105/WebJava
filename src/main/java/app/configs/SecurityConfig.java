@@ -1,5 +1,6 @@
 package app.configs;
 
+import app.configs.security.RequestFilter;
 import app.configs.security.handlers.ApiAccessDeniedHandler;
 import app.configs.security.handlers.ApiEntryPoint;
 import app.configs.security.jwt.JwtAuthenticationFilter;
@@ -67,6 +68,9 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) {
             AuthenticationManager manager = http.getSharedObject(AuthenticationManager.class);
+
+            RequestFilter requestFilter = new RequestFilter();
+            http.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
 
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(manager, "/api/login", jwtKey);
             http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
