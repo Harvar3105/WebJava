@@ -21,6 +21,10 @@
 
         <Logger name="org.springframework.core.LocalVariableTableParameterNameDiscoverer"
                 level="error"/>
+        <Logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="warn"/>
+        <Logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="warn"/>
+        <Logger name="org.hibernate.id" level="warn"/>
+        <Logger name="org.hibernate.boot" level="warn"/>
 
     </Loggers>
 </Configuration>
