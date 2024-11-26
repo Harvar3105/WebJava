@@ -1,13 +1,10 @@
 package app.dal;
 
-import app.entities.Authority;
 import app.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 
 @Repository

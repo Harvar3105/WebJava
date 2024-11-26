@@ -1,9 +1,9 @@
 package app.configs.security.jwt;
 
+import app.configs.security.TokenInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import app.configs.security.TokenInfo;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;

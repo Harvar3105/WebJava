@@ -1,15 +1,15 @@
 package app.configs.security.jwt;
 
+import app.configs.security.ApiAuthenticationFilter;
+import app.configs.security.TokenInfo;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import app.configs.security.ApiAuthenticationFilter;
-import app.configs.security.TokenInfo;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class JwtAuthenticationFilter extends ApiAuthenticationFilter {
@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends ApiAuthenticationFilter {
 
         String token = new JwtHelper(jwtKey)
                 .encode(new TokenInfo(user.getUsername(), roles));
-
+        System.out.println("JWTAuthentication: \n" + token);
         response.addHeader("Authorization", "Bearer " + token);
     }
 }

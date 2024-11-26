@@ -3,7 +3,6 @@ package app.api;
 
 import app.dal.UserDao;
 import app.entities.User;
-import jakarta.ws.rs.Produces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
