@@ -15,9 +15,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
@@ -98,13 +101,13 @@ public class SecurityConfig {
 //    public UserDetailsService userDetailService() {
 //        UserDetails user = User.builder()
 //                .username("user")
-//                .password(passwordEncoder().encode("user"))
+//                .password("$2a$10$e2v...")
 //                .roles("USER")
 //                .build();
 //
 //        UserDetails admin = User.builder()
 //                .username("admin")
-//                .password(passwordEncoder().encode("admin"))
+//                .password("$2a$10$e2v...")
 //                .roles("USER", "ADMIN")
 //                .build();
 //
