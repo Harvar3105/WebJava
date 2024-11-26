@@ -6,16 +6,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class RequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        if (!(request instanceof ContentCachingRequestWrapper)) {
+            request = new ContentCachingRequestWrapper(request);
+        }
 
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames != null) {
@@ -41,5 +48,9 @@ public class RequestFilter extends OncePerRequestFilter {
         log.warn("Response ended!!!!! \n");
 
         filterChain.doFilter(request, response);
+
+        ContentCachingRequestWrapper cachedRequest = (ContentCachingRequestWrapper) request;
+        String body = new String(cachedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
+        log.warn(body + "\n");
     }
 }
