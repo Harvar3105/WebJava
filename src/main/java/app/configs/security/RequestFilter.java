@@ -10,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Locale;
 
 @Log4j2
 public class RequestFilter extends OncePerRequestFilter {
@@ -21,7 +22,9 @@ public class RequestFilter extends OncePerRequestFilter {
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
                 String headerValue = request.getHeader(headerName);
-                if (headerName.toLowerCase().contains("Authorization".toLowerCase())){
+                String lowerCaseHeaderName = headerName.toLowerCase(Locale.getDefault());
+                String matchingPattern = "Authorization".toLowerCase(Locale.getDefault());
+                if (lowerCaseHeaderName.contains(matchingPattern)){
                     log.warn("Header: {} = {}", headerName, headerValue);
                 }
             }
