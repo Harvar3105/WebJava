@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new ApiEntryPoint())
                 .accessDeniedHandler(new ApiAccessDeniedHandler()));
 
-        http.csrf(csrf -> csrf.ignoringRequestMatchers(mvcMatcher("/login")));
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(mvcMatcher("/**")));
 
         return http.build();
     }
@@ -67,9 +67,6 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) {
             AuthenticationManager manager = http.getSharedObject(AuthenticationManager.class);
-
-//            ApiAuthenticationFilter apiAuthenticationFilter = new ApiAuthenticationFilter(manager, "/api/login");
-//            http.addFilterBefore(apiAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(manager, "/api/login", jwtKey);
             http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -96,23 +93,6 @@ public class SecurityConfig {
 
         return userDetailsManager;
     }
-
-//    @Bean
-//    public UserDetailsService userDetailService() {
-//        UserDetails user = User.builder()
-//                .username("user")
-//                .password("$2a$10$e2v...")
-//                .roles("USER")
-//                .build();
-//
-//        UserDetails admin = User.builder()
-//                .username("admin")
-//                .password("$2a$10$e2v...")
-//                .roles("USER", "ADMIN")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(user, admin);
-//    }
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
