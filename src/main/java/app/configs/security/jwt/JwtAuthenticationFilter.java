@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends ApiAuthenticationFilter {
 
         String token = new JwtHelper(jwtKey)
                 .encode(new TokenInfo(user.getUsername(), roles));
-        System.out.println("JWTAuthentication: \n" + token);
+
         response.addHeader("Authorization", "Bearer " + token);
     }
 }

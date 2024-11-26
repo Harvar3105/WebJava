@@ -30,7 +30,7 @@ public class ApiAuthenticationFilter extends AbstractAuthenticationProcessingFil
                                                 HttpServletResponse response) throws IOException {
 
         String content = request.getReader().lines().collect(Collectors.joining(""));
-        System.out.println(content);
+
         LoginCredentials loginCredentials;
         try {
             loginCredentials = new ObjectMapper().readValue(content, LoginCredentials.class);
@@ -43,7 +43,7 @@ public class ApiAuthenticationFilter extends AbstractAuthenticationProcessingFil
                         loginCredentials.getUserName(),
                         loginCredentials.getPassword());
 
-        System.out.println(token);
+
         return getAuthenticationManager().authenticate(token);
     }
 }
