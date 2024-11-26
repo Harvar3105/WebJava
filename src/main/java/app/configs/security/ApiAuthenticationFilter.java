@@ -37,9 +37,6 @@ public class ApiAuthenticationFilter extends AbstractAuthenticationProcessingFil
         }
         String content = request.getReader().lines().collect(Collectors.joining(""));
         log.warn("Api Auth content: " + content);
-//        ContentCachingRequestWrapper cachedRequest = (ContentCachingRequestWrapper) request;
-//        String content = new String(cachedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
-//        log.warn("From APIAuth filter: " + content + "\n");
 
         LoginCredentials loginCredentials;
         try {
@@ -50,7 +47,7 @@ public class ApiAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(
-                        loginCredentials.getUserName(),
+                        loginCredentials.getUsername(),
                         loginCredentials.getPassword());
 
         return getAuthenticationManager().authenticate(token);

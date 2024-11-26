@@ -19,7 +19,7 @@ public class UserDao {
     }
 
     public User getUserByName(String userName){
-        var sql = em.createQuery("SELECT u FROM User u JOIN FETCH u.authorities WHERE u.userName = :name", User.class);
+        var sql = em.createQuery("SELECT u FROM User u JOIN FETCH u.authorities WHERE u.username = :name", User.class);
         sql.setParameter("name", userName);
         return sql.getSingleResult();
     }

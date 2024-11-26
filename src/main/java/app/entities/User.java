@@ -20,7 +20,7 @@ public class User {
     @GeneratedValue
     private long id;
     @NonNull
-    private String userName;
+    private String username;
     @NonNull
     private String firstName;
     @NonNull
