@@ -15,15 +15,23 @@ public class RequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        log.warn("Request URI: {}", request.getRequestURI());
-        log.warn("HTTP Method: {}", request.getMethod());
+//        log.warn("Request URI: {}", request.getRequestURI());
+//        log.warn("HTTP Method: {}", request.getMethod());
+        log.warn("NEW REQUEST HEADER:\n");
 
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames != null) {
+            boolean thereIsAuthHeader = false;
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
                 String headerValue = request.getHeader(headerName);
-                log.warn("Header: {} = {}", headerName, headerValue);
+                if (headerName.trim().equals("Authorization")){
+                    thereIsAuthHeader = true;
+                    log.warn("Header: {} = {}", headerName, headerValue);
+                }
+            }
+            if (!thereIsAuthHeader){
+                log.warn("No Authorization header found!");
             }
         }
 
